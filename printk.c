@@ -11,60 +11,68 @@ void puts_ll(const char *buf)
 
 void printi(unsigned int i, int base, int cap)
 {
-	const char dig[]="0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-	char buf[33];
+	char buf[34];
 	int j;
-	int c;
+	int mod;
 
-	unsigned div;
+	buf[33] = 0;
+	j = 33;
 
-	div = (unsigned int)(~0)/base;
-	if(cap) cap = 'a' - 'A';
+	if(cap) cap = 'A' - 10;
+	else cap = 'a' - 10;
 
-	for(j=0; j<i/base; j++) {
-		c = i/div;
-		buf[j] = dig[c];
-		if(c>9) buf[j] += cap;
-		i *= base;
-		
-	}
-	buf[j] = 0;
+	do {
+		mod = i % base;
+		i /= base;
+		if(mod < 10) {
+			buf[--j] = '0' + mod;
+		} else {
+			buf[--j] = mod + cap;
+		}
+	} while(i);
 
-	puts_ll(buf);
+	printf("%s\n", &buf[j]);
+
 }
-
-
 
 void printh(unsigned int h, int cap)
 {
-	const char hex[16]="0123456789ABCDEF";
-	char buf[16] = "0xDEADBEEF";
+	char buf[9];
 	unsigned int c;
 	int i;
 
-	if(cap) cap = 'a' - 'A';
-	else cap = 0;
+	if(cap) cap = 'A' - 10;
+	else cap = 'a' - 10;
 
 	for(i=0; i<8; i++) {
-		c = h / 0x10000000;
+		c = h >> 28;
+		printf("c[%u] ", c);
+		if(c < 10) buf[i] = c +'0';
+		else buf[i] = c + cap;
+
 		h <<= 4;
-		c = hex[c];
-		if(c > '9') c += cap;
-		buf[i] = c;
 	}
 	buf[i] = 0;
 
 	puts_ll(buf);
-	
 }
 
 
 int main(int argc, char *argv[])
 {
-	printh(0x000dbeef, 1);
-	printh(0x1234beef, 0);
+	printh(0x1234ABCD,  0); 
+	printh(0x1234ABCD,  1);
+	printh(~0,  1);
+	printh(0,  1);
 
-	printi(0x1234ABCD, 16, 0);
-	printi(0x1234ABCD, 16, 1);
+	printi(0, 2, 1);
+	printi(~0, 2, 1);
+
+	printi(0, 10, 1);
+	printi(~0, 10, 1);
+
+	printi(012345670, 8, 1);
+	printi(012345670, 8, 1);
+	printi(123456789, 10, 1);
+	printi(0, 2, 1);
 }
-
