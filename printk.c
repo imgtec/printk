@@ -9,7 +9,7 @@ void puts_ll(const char *buf)
 }
 #endif
 
-void printi(unsigned int i, int base)
+void printi(unsigned int i, int base, int cap)
 {
 	const char dig[]="0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 	char buf[33];
@@ -19,10 +19,12 @@ void printi(unsigned int i, int base)
 	unsigned div;
 
 	div = (unsigned int)(~0)/base;
+	if(cap) cap = 'a' - 'A';
 
 	for(j=0; j<i/base; j++) {
 		c = i/div;
 		buf[j] = dig[c];
+		if(c>9) buf[j] += cap;
 		i *= base;
 		
 	}
@@ -30,6 +32,7 @@ void printi(unsigned int i, int base)
 
 	puts_ll(buf);
 }
+
 
 
 void printh(unsigned int h, int cap)
@@ -61,6 +64,7 @@ int main(int argc, char *argv[])
 	printh(0x000dbeef, 1);
 	printh(0x1234beef, 0);
 
-	printi(0x1234ABCD, 16);
+	printi(0x1234ABCD, 16, 0);
+	printi(0x1234ABCD, 16, 1);
 }
 
