@@ -1,12 +1,18 @@
-#include <stdio.h>
-
 #ifdef DEBUG
+#include <stdio.h>
 void puts_ll(const char *buf)
 {
 	printf("%s\n", buf);
 }
 #else
-extern void puts_ll(const char *buf);
+void puts_ll(const char *buf)
+{
+	char c;
+	while(c = *buf++)
+		putSIO_mx28(0, c);
+	putSIO_mx28(0, '\r');
+	putSIO_mx28(0, '\n');
+}
 #endif
 
 void printi(unsigned int i, int base, int cap)
@@ -31,7 +37,7 @@ void printi(unsigned int i, int base, int cap)
 		}
 	} while(i);
 
-	printf("%s\n", &buf[j]);
+	puts_ll(&buf[j]);
 
 }
 
@@ -41,12 +47,18 @@ void printh(unsigned int h, int cap)
 	unsigned int c;
 	int i;
 
+	putSIO_mx28(0, 'H');
+
+	puts_ll("Hello World");
+
 	if(cap) cap = 'A' - 10;
 	else cap = 'a' - 10;
 
 	for(i=0; i<8; i++) {
 		c = h >> 28;
+		#ifdef DEBUG
 		printf("c[%u] ", c);
+		#endif
 		if(c < 10) buf[i] = c +'0';
 		else buf[i] = c + cap;
 
@@ -57,7 +69,7 @@ void printh(unsigned int h, int cap)
 	puts_ll(buf);
 }
 
-#ifdef DEBGU
+#ifdef DEBUG
 int main(int argc, char *argv[])
 {
 	printh(0x1234ABCD,  0); 
