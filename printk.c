@@ -1,12 +1,12 @@
 #include <stdio.h>
 
-#if 0
-extern void puts_ll(const char *buf);
-#else
+#ifdef DEBUG
 void puts_ll(const char *buf)
 {
 	printf("%s\n", buf);
 }
+#else
+extern void puts_ll(const char *buf);
 #endif
 
 void printi(unsigned int i, int base, int cap)
@@ -57,7 +57,7 @@ void printh(unsigned int h, int cap)
 	puts_ll(buf);
 }
 
-
+#ifdef DEBGU
 int main(int argc, char *argv[])
 {
 	printh(0x1234ABCD,  0); 
@@ -76,3 +76,4 @@ int main(int argc, char *argv[])
 	printi(123456789, 10, 1);
 	printi(0, 2, 1);
 }
+#endif
