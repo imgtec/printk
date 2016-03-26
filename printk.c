@@ -41,15 +41,12 @@ void printi(unsigned int i, int base, int cap)
 
 }
 
+
 void printh(unsigned int h, int cap)
 {
 	char buf[9];
 	unsigned int c;
 	int i;
-
-	putSIO_mx28(0, 'H');
-
-	puts_ll("Hello World");
 
 	if(cap) cap = 'A' - 10;
 	else cap = 'a' - 10;
