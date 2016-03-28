@@ -150,17 +150,28 @@ int vprintks(const char *fmt, va_list args)
 		if(j) {	/* format */
 			format[j++] = c;
 			format[j] = 0;
-			if      (c == 'c') printkc(format, 0x00000064), j=0;
-			else if (c == '%') printkc(format, '%'),        j=0;
-			else if (c == 'd') printki(format,  123456789), j=0;
-			else if (c == 'u') printki(format,  987654321), j=0;
-			else if (c == 'x') printkh(format, 0xABCDEF00), j=0;
-			else if (c == 'X') printkh(format, 0xABCDEF11), j=0;
-			else if (c == 'p') printkh(format, 0xABCDEF22), j=0;
-			else if (c == 'P') printkh(format, 0xABCDEF33), j=0;
-			else if (c == 'b') printkh(format, 0x10101010), j=0;
-			else if (c == 'B') printkh(format, 0x11001100), j=0;
-			else if (j>8)      prints(format),              j=0;
+			if      (c == 'c')
+				printkc(format, va_arg(args, int)), j=0;
+			else if (c == '%')
+				printkc(format, c),                 j=0;
+			else if (c == 'd')
+				printki(format, va_arg(args, int)), j=0;
+			else if (c == 'u')
+				printki(format, va_arg(args, int)), j=0;
+			else if (c == 'x')
+				printkh(format, va_arg(args, int)), j=0;
+			else if (c == 'X')
+				printkh(format, va_arg(args, int)), j=0;
+			else if (c == 'p')
+				printkh(format, va_arg(args, int)), j=0;
+			else if (c == 'P')
+				printkh(format, va_arg(args, int)), j=0;
+			else if (c == 'b')
+				printkh(format, va_arg(args, int)), j=0;
+			else if (c == 'B')
+				printkh(format, va_arg(args, int)), j=0;
+			else if (j>8)
+				prints(format),                     j=0;
 		}
 		else {
 			if(c == '%') format[j++] = c;
@@ -185,7 +196,7 @@ int main(int argc, char *argv[])
 "%b  %23B , s%Xsfa%%, %kdfsdf\n";
 
 	prints(fmt);
-	printks(fmt);
+	printks(fmt, 1, 2, 3, 4, 5, 6, 7, 8);
 
 	return 0;
 
