@@ -40,12 +40,12 @@ int printch(int ch)
 
 void printi(unsigned int i, int base, int cap)
 {
-	char buf[34];
+	char buf[32+1];
 	int j;
 	int mod;
 
-	buf[33] = 0;
-	j = 33;
+	buf[32] = 0;
+	j = 32;
 
 	if(cap) cap = 'A' - 10;
 	else cap = 'a' - 10;
@@ -102,18 +102,26 @@ int prints(const char *str)
 
 int printki(const char *fmt, int num)
 {
-	prints(fmt);
-	prints("[");
-	printi(num, 10, 0);
-	prints("]");
+//	prints("[");
+	int i = 0;
+
+	while(fmt[i]) i++;
+	i = fmt[i-1];
+
+	if(i=='b') printi(num, 2, 0);
+	else if(i=='d') printi(num, 10, 0);
+	else if(i=='o') printi(num, 8, 0);
+	else printi(num, 16, 1);
+
+//	prints("]");
 }
 
 int printkh(const char *fmt, int num)
 {
-	prints(fmt);
-	prints("[");
+//	prints(fmt);
+//	prints("[");
 	printh(num, 0);
-	prints("]");
+//	prints("]");
 }
 
 int printkc(const char *fmt, int ch)
@@ -161,15 +169,15 @@ int vprintks(const char *fmt, va_list args)
 			else if (c == 'x')
 				printkh(format, va_arg(args, int)), j=0;
 			else if (c == 'X')
-				printkh(format, va_arg(args, int)), j=0;
+				printki(format, va_arg(args, int)), j=0;
 			else if (c == 'p')
 				printkh(format, va_arg(args, int)), j=0;
 			else if (c == 'P')
 				printkh(format, va_arg(args, int)), j=0;
 			else if (c == 'b')
-				printkh(format, va_arg(args, int)), j=0;
+				printki(format, va_arg(args, int)), j=0;
 			else if (c == 'B')
-				printkh(format, va_arg(args, int)), j=0;
+				printki(format, va_arg(args, int)), j=0;
 			else if (c == 's') {
 				prints(format);
 				prints("[");
@@ -206,8 +214,9 @@ int main(int argc, char *argv[])
 	prints(fmt);
 	printks(fmt, 1, 2, 3, 4, 5, 6, 7, 8);
 
-	printks("%d", 123456789);
+	printks("%d", 123456789, 1234);
 	printks("My name is %s.\n", name);
+	printks("0x8421 in binary:[%b]\n", 0x8421, 11);
 
 	return 0;
 
