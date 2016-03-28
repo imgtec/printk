@@ -98,7 +98,7 @@ int prints(const char *str)
 
 	for(i=0; str[i]; i++) {
 		c = str[i];
-		__putchar(c);
+		printch(c);
 	}
 }
 
@@ -134,7 +134,7 @@ int printkc(const char *fmt, int ch)
 {
 	prints(fmt);
 	prints("[");
-	__putchar(ch);
+	printch(ch);
 	prints("]");
 }
 
@@ -162,7 +162,9 @@ int printks(const char *fmt)
 		if(j) {	/* format */
 			format[j++] = c;
 			format[j] = 0;
-			if      (c == 'd') printki(format, 1234567890), j=0;
+			if      (c == 'c') printkc(format, 0x00000064), j=0;
+			else if (c == '%') printkc(format, '%'),        j=0;
+			else if (c == 'd') printki(format, 1234567890), j=0;
 			else if (c == 'x') printkh(format, 0xABCDEF00), j=0;
 			else if (c == 'X') printkh(format, 0xABCDEF11), j=0;
 			else if (c == 'p') printkh(format, 0xABCDEF22), j=0;
@@ -171,7 +173,7 @@ int printks(const char *fmt)
 		}
 		else {
 			if(c == '%') format[j++] = c;
-			else __putchar(c);
+			else printch(c);
 		}
 	}
 }
@@ -181,7 +183,7 @@ int printks(const char *fmt)
 #ifdef DEBUG
 int main(int argc, char *argv[])
 {
-	const char *fmt = "%d,,,,%x %12345678901234X %12345d, s%Xsfa%%, %kdfsdf\n";
+	const char *fmt = "%d,,,,%x %1234567890%123$% %c1234X %12345d, s%Xsfa%%, %kdfsdf\n";
 
 	prints(fmt);
 	printks(fmt);
