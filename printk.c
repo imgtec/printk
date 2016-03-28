@@ -62,8 +62,7 @@ void printi(unsigned int i, int base, int cap)
 		}
 	} while(i);
 
-//	puts_ll(&buf[j]);
-
+	prints(buf+j);
 }
 
 
@@ -104,6 +103,41 @@ int prints(const char *str)
 }
 
 
+
+
+
+/*
+ * fmt = "%[^d]*d\0"
+ * eg. "%088d"
+ */
+
+int printki(const char *fmt, int num)
+{
+	prints(fmt);
+	prints("[");
+	printi(num, 10, 0);
+	prints("]");
+}
+
+/*
+ * fmt = "%08x" "%
+ */
+int printkh(const char *fmt, int num)
+{
+	prints(fmt);
+	prints("[");
+	printh(num, 0);
+	prints("]");
+}
+
+int printkc(const char *fmt, int ch)
+{
+	prints(fmt);
+	prints("[");
+	__putchar(ch);
+	prints("]");
+}
+
 /*
  * safe version of printk.
  */
@@ -114,7 +148,7 @@ int printks(const char *fmt)
 	unsigned int flag;
 	int c;
 	const char *seek;
-	char format[8+3];
+	char format[16];
 	int i, j;
 
 
@@ -123,28 +157,22 @@ int printks(const char *fmt)
 
 	j = 0;		/* format[] index. */
 	i = 0;		/* index of fmt[]. */
-	c = fmt[i];
 
-	while(c) {
+	while(c = fmt[i++]) {
 		if(j) {	/* format */
-			if (c == 'd') printi(123456789, 10, 0);
-			else if (c == 'x') printh(0xABCDEF00, 0);
-			else if (c == 'X') printh(0xABCDEF11, 1);
-			else if (j++>8) { /* else++ */
-				format[j++] = c;
-				format[j] = 0;
-				prints(format);
-				j = 0;
-			}
-			else {
-				format[j] = fmt[i];
-			}
+			format[j++] = c;
+			format[j] = 0;
+			if      (c == 'd') printki(format, 1234567890), j=0;
+			else if (c == 'x') printkh(format, 0xABCDEF00), j=0;
+			else if (c == 'X') printkh(format, 0xABCDEF11), j=0;
+			else if (c == 'p') printkh(format, 0xABCDEF22), j=0;
+			else if (c == 'P') printkh(format, 0xABCDEF33), j=0;
+			else if (j>8)      prints(format),              j=0;
 		}
 		else {
 			if(c == '%') format[j++] = c;
 			else __putchar(c);
 		}
-		c = fmt[i++];
 	}
 }
 
@@ -153,8 +181,9 @@ int printks(const char *fmt)
 #ifdef DEBUG
 int main(int argc, char *argv[])
 {
-	const char *fmt = "%d,,,,%x %11111, s%Xsfa%%, %kdfsdfsfsfx";
+	const char *fmt = "%d,,,,%x %12345678901234X %12345d, s%Xsfa%%, %kdfsdf\n";
 
+	prints(fmt);
 	printks(fmt);
 
 	return 0;
