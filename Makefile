@@ -2,5 +2,5 @@
 
 
 
-CFLAGS := -DDEBUG
+CFLAGS := -DDEBUG -g
 printk: printk.o
