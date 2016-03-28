@@ -170,6 +170,13 @@ int vprintks(const char *fmt, va_list args)
 				printkh(format, va_arg(args, int)), j=0;
 			else if (c == 'B')
 				printkh(format, va_arg(args, int)), j=0;
+			else if (c == 's') {
+				prints(format);
+				prints("[");
+				prints(va_arg(args, const char *));
+				j=0;
+				prints("]");
+			}
 			else if (j>8)
 				prints(format),                     j=0;
 		}
@@ -191,12 +198,16 @@ int printks(const char *fmt, ...)
 #ifdef DEBUG
 int main(int argc, char *argv[])
 {
+	char name[]="Du Huanpeng";
 	const char *fmt = 
 "%d,,,,%x %1234567890%123$% %c1234X %12345d\n"
 "%b  %23B , s%Xsfa%%, %kdfsdf\n";
 
 	prints(fmt);
 	printks(fmt, 1, 2, 3, 4, 5, 6, 7, 8);
+
+	printks("%d", 123456789);
+	printks("My name is %s.\n", name);
 
 	return 0;
 
