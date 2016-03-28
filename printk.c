@@ -27,13 +27,16 @@
 
 #else
 
-int printch(int ch);
+int printch(int ch)
 {
-	if (c == '\n') putSIO_mx28(0, '\r');
-	putSIO_mx28(0, c);
+	if (ch == '\n') putSIO_mx28(0, '\r');
+	putSIO_mx28(0, ch);
 }
 
 #endif
+
+#include <stdarg.h>
+
 
 void printi(unsigned int i, int base, int cap)
 {
@@ -57,7 +60,7 @@ void printi(unsigned int i, int base, int cap)
 		}
 	} while(i);
 
-	prints(buf+j);
+	prints(&buf[j]);
 }
 
 
@@ -121,12 +124,16 @@ int printkc(const char *fmt, int ch)
 	prints("]");
 }
 
+
+
+
+
 /*
- * safe version of printk.
+ * second version of vprintk.
  */
 
 
-int printks(const char *fmt)
+int vprintks(const char *fmt, va_list args)
 {
 	unsigned int flag;
 	int c;
@@ -160,9 +167,15 @@ int printks(const char *fmt)
 			else printch(c);
 		}
 	}
+	va_end(args);
 }
 
-
+int printk(const char *fmt, ...)
+{
+	va_list args;
+	va_start(args, fmt);
+	return vprintks(fmt, args);
+}
 
 #ifdef DEBUG
 int main(int argc, char *argv[])
@@ -172,7 +185,7 @@ int main(int argc, char *argv[])
 "%b  %23B , s%Xsfa%%, %kdfsdf\n";
 
 	prints(fmt);
-	printks(fmt);
+	printk(fmt);
 
 	return 0;
 
