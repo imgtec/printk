@@ -21,23 +21,18 @@
  */
 
 #ifdef DEBUG
-#include <stdio.h>
-void puts_ll(const char *buf)
-{
-	printf("%s\n", buf);
-}
 
-#define __putchar(c) printf("%c", c)
+#include <stdio.h>
+#define printch(c) putchar(c);
 
 #else
-void puts_ll(const char *buf)
+
+int printch(int ch);
 {
-	char c;
-	while(c = *buf++)
-		putSIO_mx28(0, c);
-	putSIO_mx28(0, '\r');
-	putSIO_mx28(0, '\n');
+	if (c == '\n') putSIO_mx28(0, '\r');
+	putSIO_mx28(0, c);
 }
+
 #endif
 
 void printi(unsigned int i, int base, int cap)
@@ -102,15 +97,6 @@ int prints(const char *str)
 	}
 }
 
-
-
-
-
-/*
- * fmt = "%[^d]*d\0"
- * eg. "%088d"
- */
-
 int printki(const char *fmt, int num)
 {
 	prints(fmt);
@@ -119,9 +105,6 @@ int printki(const char *fmt, int num)
 	prints("]");
 }
 
-/*
- * fmt = "%08x" "%
- */
 int printkh(const char *fmt, int num)
 {
 	prints(fmt);
@@ -147,13 +130,11 @@ int printks(const char *fmt)
 {
 	unsigned int flag;
 	int c;
-	const char *seek;
 	char format[16];
 	int i, j;
 
 
 	flag = 0;
-	seek = fmt;
 
 	j = 0;		/* format[] index. */
 	i = 0;		/* index of fmt[]. */
@@ -164,11 +145,14 @@ int printks(const char *fmt)
 			format[j] = 0;
 			if      (c == 'c') printkc(format, 0x00000064), j=0;
 			else if (c == '%') printkc(format, '%'),        j=0;
-			else if (c == 'd') printki(format, 1234567890), j=0;
+			else if (c == 'd') printki(format,  123456789), j=0;
+			else if (c == 'u') printki(format,  987654321), j=0;
 			else if (c == 'x') printkh(format, 0xABCDEF00), j=0;
 			else if (c == 'X') printkh(format, 0xABCDEF11), j=0;
 			else if (c == 'p') printkh(format, 0xABCDEF22), j=0;
 			else if (c == 'P') printkh(format, 0xABCDEF33), j=0;
+			else if (c == 'b') printkh(format, 0x10101010), j=0;
+			else if (c == 'B') printkh(format, 0x11001100), j=0;
 			else if (j>8)      prints(format),              j=0;
 		}
 		else {
@@ -183,7 +167,9 @@ int printks(const char *fmt)
 #ifdef DEBUG
 int main(int argc, char *argv[])
 {
-	const char *fmt = "%d,,,,%x %1234567890%123$% %c1234X %12345d, s%Xsfa%%, %kdfsdf\n";
+	const char *fmt = 
+"%d,,,,%x %1234567890%123$% %c1234X %12345d\n"
+"%b  %23B , s%Xsfa%%, %kdfsdf\n";
 
 	prints(fmt);
 	printks(fmt);
