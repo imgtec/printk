@@ -170,7 +170,7 @@ int vprintks(const char *fmt, va_list args)
 	va_end(args);
 }
 
-int printk(const char *fmt, ...)
+int printks(const char *fmt, ...)
 {
 	va_list args;
 	va_start(args, fmt);
@@ -185,7 +185,7 @@ int main(int argc, char *argv[])
 "%b  %23B , s%Xsfa%%, %kdfsdf\n";
 
 	prints(fmt);
-	printk(fmt);
+	printks(fmt);
 
 	return 0;
 
