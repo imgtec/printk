@@ -125,7 +125,7 @@ int vprintks(const char *fmt, va_list args)
 				 * ^   ^   ^
 				 * j   i   i
 				 */
-				w = 12;
+				w = 0;
 				while(w+pi>0) {
 					w--;
 					printch('$');
