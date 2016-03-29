@@ -105,7 +105,7 @@ int vprintks(const char *fmt, va_list args)
 			} else if (c == '%') {
 				j++;
 				while(j<i) printch(fmt[j++]);
-			} else if (c == 'd') {
+			} else if (c == 'd' || c == 'u') {
 				pi = printi(printbufend, va_arg(args, int), 10, 0);
 			} else if (c == 'x' || c == 'X' || c == 'p') {
 				pi = printi(printbufend, va_arg(args, int), 16, c!='x');
