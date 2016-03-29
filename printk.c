@@ -101,9 +101,9 @@ int vprintks(const char *fmt, va_list args)
 			} else if (c == 'd') {
 				pi = sizeof(printbuf) - 1;
 				pi += printi(printbuf+pi, va_arg(args, int), 10, 0);
-			} else if (c == 'x' || c == 'X') {
+			} else if (c == 'x' || c == 'X' || c == 'p') {
 				pi = sizeof(printbuf) - 1;
-				pi += printi(printbuf+pi, va_arg(args, int), 16, c=='X');
+				pi += printi(printbuf+pi, va_arg(args, int), 16, c!='x');
 			} else if (c == 'b') {
 				pi = sizeof(printbuf) - 1;
 				pi += printi(printbuf+pi, va_arg(args, int), 16, 0);
@@ -147,12 +147,10 @@ int main(int argc, char *argv[])
 	printks("bin: [%b]\n", 0x8421);
 	printks("string: [%s]\n", "String");
 	printks("100: [%%]\n", 100);
-	printks("error format: [%1234567890c]\n", 100);
-	printks("error format: [%ASDF]\n", 100);
+	printks("error in the middle of format: [%1234567890c]\n", 100);
+	printks("error format at the end: [%ASDF]\n", 100);
 	printks("Left pad zero: [%08X]\n", 0xABCDEF00);
 	printks("Right pad zero:[%-8X]\n", 0xABCDEF11);
-
-
 	return 0;
 
 }
