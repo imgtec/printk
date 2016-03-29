@@ -95,6 +95,7 @@ int vprintks(const char *fmt, va_list args)
 
 	j = 0;
 	i = 0;
+	pi = 0;
 
 	while(c = fmt[i]) {
 		if(j != i++) {	/* formating */
@@ -118,12 +119,18 @@ int vprintks(const char *fmt, va_list args)
 			}
 
 			if(pi) {
+				int w;
 				/* 12345..n
 				 * %0??f..f
 				 * ^   ^   ^
 				 * j   i   i
 				 */
-				prints(printbufend[pi]);
+				w = 12;
+				while(w+pi>0) {
+					w--;
+					printch('$');
+				}
+				prints(printbufend+pi);
 				pi = 0;
 				j  = i;
 			}
