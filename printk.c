@@ -86,6 +86,12 @@ int vprintks(const char *fmt, va_list args)
 	int c;
 	int i, j, pi;
 	char printbuf[32 + 1];
+	#define printbufend (printbuf + sizeof(printbuf) - 1)
+
+	int flag, pad;
+	#define PAD_RIGHT	1
+	#define PAD_LEFT	2
+
 
 	j = 0;
 	i = 0;
@@ -93,21 +99,17 @@ int vprintks(const char *fmt, va_list args)
 	while(c = fmt[i]) {
 		if(j != i++) {	/* formating */
 			if (c == 'c') {
-				pi = sizeof(printbuf);
-				printbuf[--pi] = 0;
-				printbuf[--pi] = va_arg(args, int);
+				printbufend[pi--] = 0;
+				printbufend[pi] = va_arg(args, int);
 			} else if (c == '%') {
 				j++;
 				while(j<i) printch(fmt[j++]);
 			} else if (c == 'd') {
-				pi = sizeof(printbuf) - 1;
-				pi += printi(printbuf+pi, va_arg(args, int), 10, 0);
+				pi = printi(printbufend, va_arg(args, int), 10, 0);
 			} else if (c == 'x' || c == 'X' || c == 'p') {
-				pi = sizeof(printbuf) - 1;
-				pi += printi(printbuf+pi, va_arg(args, int), 16, c!='x');
+				pi = printi(printbufend, va_arg(args, int), 16, c!='x');
 			} else if (c == 'b') {
-				pi = sizeof(printbuf) - 1;
-				pi += printi(printbuf+pi, va_arg(args, int), 2, 0);
+				pi = printi(printbufend, va_arg(args, int), 2, 0);
 			} else if (c == 's') {
 				prints(va_arg(args, const char *));
 				j=i;
@@ -121,7 +123,7 @@ int vprintks(const char *fmt, va_list args)
 				 * ^   ^   ^
 				 * j   i   i
 				 */
-				prints(printbuf+pi);
+				prints(printbufend[pi]);
 				pi = 0;
 				j  = i;
 			}
