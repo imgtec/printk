@@ -97,6 +97,7 @@ int vprintks(const char *fmt, va_list args)
 				printbuf[--pi] = 0;
 				printbuf[--pi] = va_arg(args, int);
 			} else if (c == '%') {
+				j++;
 				while(j<i) printch(fmt[j++]);
 			} else if (c == 'd') {
 				pi = sizeof(printbuf) - 1;
@@ -106,7 +107,7 @@ int vprintks(const char *fmt, va_list args)
 				pi += printi(printbuf+pi, va_arg(args, int), 16, c!='x');
 			} else if (c == 'b') {
 				pi = sizeof(printbuf) - 1;
-				pi += printi(printbuf+pi, va_arg(args, int), 16, 0);
+				pi += printi(printbuf+pi, va_arg(args, int), 2, 0);
 			} else if (c == 's') {
 				prints(va_arg(args, const char *));
 				j=i;
@@ -115,6 +116,11 @@ int vprintks(const char *fmt, va_list args)
 			}
 
 			if(pi) {
+				/* 12345..n
+				 * %0??f..f
+				 * ^   ^   ^
+				 * j   i   i
+				 */
 				prints(printbuf+pi);
 				pi = 0;
 				j  = i;
@@ -143,14 +149,16 @@ int main(int argc, char *argv[])
 	char format[] = "%099x" "%-99x" "%99lu" "%??c";
 	printks("char: [%c]\n", 'C');
 	printks("hex: [%x]\n", 0xABCD1234);
+	printks("hex: [%X]\n", 0xABCDEF);
 	printks("dec: [%d]\n", 1234567890);
 	printks("bin: [%b]\n", 0x8421);
-	printks("string: [%s]\n", "String");
+	printks("string: [%s]\n", "Hello World");
 	printks("100: [%%]\n", 100);
 	printks("error in the middle of format: [%1234567890c]\n", 100);
 	printks("error format at the end: [%ASDF]\n", 100);
 	printks("Left pad zero: [%08X]\n", 0xABCDEF00);
 	printks("Right pad zero:[%-8X]\n", 0xABCDEF11);
+	printks("percent 75 [75%]\n", 75);
 	return 0;
 
 }
